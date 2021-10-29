@@ -4,7 +4,7 @@ const app = express();
 
 app.get('/', (req, res) => {
   console.log(typeof req.headers.cookie);
-  res.cookie('name', 'srikalyan').send('welcome');
+  res.cookie('name', 'srikalyan').send('welcome hello');
 });
 
 const PORT = process.env.PORT || 5000;
