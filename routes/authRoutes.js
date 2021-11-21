@@ -12,13 +12,16 @@ module.exports = (app) => {
     '/auth/google/callback',
     // Google response with code /auth/google/callback?code=123434'
     // Fetching code we request with code for user profile using passport.js
-    passport.authenticate('google')
+    passport.authenticate('google'),
+    (req, res) => {
+      res.redirect('/survey');
+    }
   );
 
   app.get('/api/logout', (req, res) => {
     // Passport add logout object to request object
     req.logout();
-    res.send(req.user);
+    res.redirect('/');
   });
 
   app.get('/api/current_user', (req, res) => {

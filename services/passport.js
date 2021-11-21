@@ -28,6 +28,7 @@ passport.use(
       clientSecret: keys.googleClientSecret,
       callbackURL: '/auth/google/callback',
       proxy: true,
+      
     },
     // Once passport.js send code which we get from google '/auth/google/callback?code=12345'
     // In case of successful request
