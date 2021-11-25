@@ -6,6 +6,7 @@ const keys = require('./config/keys');
 require('./DB/mongoose')();
 
 require('./models/User');
+require('./models/Survey');
 require('./services/passport');
 
 const app = express();
@@ -25,9 +26,11 @@ app.use(passport.session());
 
 const authRoute = require('./routes/authRoutes');
 const billingRoutes = require('./routes/billingRoutes');
+const surveyRoutes = require('./routes/surveyRoutes');
 
 authRoute(app);
 billingRoutes(app);
+surveyRoutes(app);
 
 // React route
 //Only for Production send main.js main.css and index.html file
