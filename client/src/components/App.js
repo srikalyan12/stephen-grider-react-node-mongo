@@ -5,9 +5,10 @@ import { fetchUser } from './../actions';
 import Landing from './Landing';
 
 import Header from './Header';
+import Dashboard from './Dashboard';
+import SurveyNew from './survey/SurveyNew';
 // const Header = () => <h2>Header</h2>;
-const Dashboard = () => <h2>Dashboard</h2>;
-const SurveyNew = () => <h2>SurveyNew</h2>;
+//const SurveyNew = () => <h2>SurveyNew</h2>;
 
 class App extends React.Component {
   componentDidMount() {
