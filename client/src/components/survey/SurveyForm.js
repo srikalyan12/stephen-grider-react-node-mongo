@@ -2,12 +2,9 @@ import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { Link } from 'react-router-dom';
 import SurveyField from './SurveyField';
-const FIELDS = [
-  { label: 'Survey Title', name: 'title' },
-  { label: 'Subject Line', name: 'subject' },
-  { label: 'Email Body', name: 'body' },
-  { label: 'Recipient List', name: 'emails' },
-];
+import emailValidation from '../../utils/emailValidation';
+import { FIELDS } from './formFields';
+
 class SurveyForm extends Component {
   renderFields() {
     return FIELDS.map((field) => {
@@ -25,7 +22,7 @@ class SurveyForm extends Component {
   render() {
     return (
       <div>
-        <form onSubmit={this.props.handleSubmit((value) => console.log(value))}>
+        <form onSubmit={this.props.handleSubmit(this.props.onSurveySubmit)}>
           {this.renderFields()}
           <button type='submit' className='teal btn-flat right white-text'>
             Next
@@ -40,7 +37,21 @@ class SurveyForm extends Component {
     );
   }
 }
+const validate = (values) => {
+  let error = {};
+  error.recipients = values.recipients && emailValidation(values.recipients);
+
+  FIELDS.forEach(({ name }) => {
+    if (!values[name]) {
+      error[name] = `Please enter the ${name}`;
+    }
+  });
+
+  return error;
+};
 
 export default reduxForm({
+  validate,
   form: 'surveyForm',
+  destroyOnUnmount: false,
 })(SurveyForm);

@@ -1,3 +1,6 @@
+const _ = require('lodash');
+const { Path } = require('path-parser');
+const { URL } = require('url');
 const mongoose = require('mongoose');
 const requireLogin = require('../middleware/requireLogin');
 const requiredCredits = require('../middleware/requireCredits');
@@ -7,8 +10,41 @@ const Mailer = require('../services/Mailer');
 const surveyTemplate = require('../services/emailTemplate/surveyTemplate');
 
 module.exports = (app) => {
-  app.get('/api/surveys', (req, res) => {
+  app.get('/api/surveys/:surveyId/:result', (req, res) => {
     res.send('Thanks for the response');
+  });
+
+  app.post('/api/surveys/webhooks', (req, res) => {
+    const events = _.map(req.body, ({ email, url }) => {
+      const pathname = new URL(url).pathname;
+      const p = new Path('/api/surveys/:surveyId/:choice');
+      const match = p.test(pathname);
+      if (match) {
+        return { email, ...match };
+      }
+    });
+    console.log('*****Events*****', events);
+
+    //Remove null, undefined and false using compact
+    // Remove duplicate using uniq
+    const compactEvent = _.uniq(_.compact(events), 'email', 'surveyId');
+    _.forEach(compactEvent, (event) => {
+      Survey.updateOne(
+        {
+          _id: event.surveyId,
+          recipients: {
+            $elemMatch: { email: event.email, responded: false },
+          },
+        },
+        {
+          $inc: { [event.choice]: 1 },
+          $set: { 'recipients.$.responded': true },
+          lastResponded: new Date(),
+        }
+      ).exec();
+    });
+
+    res.send({});
   });
 
   app.post('/api/surveys', requireLogin, requiredCredits, async (req, res) => {
@@ -41,5 +77,12 @@ module.exports = (app) => {
     } catch (err) {
       res.status(422).send(user);
     }
+  });
+
+  app.get('/api/surveys', requireLogin, async (req, res) => {
+    const surveys = await Survey.find({ _user: req.user.id }).select({
+      recipients: 0,
+    });
+    res.send(surveys);
   });
 };

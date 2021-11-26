@@ -11,8 +11,9 @@
     "start": "node index.js",
     "server": "nodemon index.js",
     "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "dev": "concurrently \"npm run server\" \"npm run client\" \" npm run webhook \"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
+    "webhook": "lt -p 5000 -s nfnduibdbchdbchjbhbvjdbvhjdbvcnjbduivbfuvib"
   },
   "author": "",
   "license": "ISC",
@@ -21,10 +22,12 @@
     "concurrently": "^6.4.0",
     "cookie-session": "^1.4.0",
     "express": "^4.17.1",
+    "lodash": "^4.17.21",
     "mongoose": "^6.0.12",
     "nodemon": "^2.0.14",
     "passport": "^0.5.0",
     "passport-google-oauth20": "^2.0.0",
+    "path-parser": "^6.1.0",
     "sendgrid": "^5.2.3",
     "stripe": "^8.191.0"
   }
